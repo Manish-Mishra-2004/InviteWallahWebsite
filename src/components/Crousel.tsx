@@ -89,11 +89,27 @@ function App(data) {
     return () => clearInterval(timer);
   }, []);
 
-  const getTransformValue = () => {
-    const baseTransform = -(currentIndex * (100 / 3));
-    return `translateX(${baseTransform}%)`;
-  };
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
+
+  // const getTransformValue = () => {
+  //   const baseTransform = -(currentIndex * (100 / 3));
+  //   return `translateX(${baseTransform}%)`;
+  // };
+
+  const getTransformValue = () => {
+  const isMobile = window.innerWidth < 768;
+  const slideWidth = isMobile ? 100 : 100 / 3;
+  const baseTransform = -(currentIndex * slideWidth);
+  return `translateX(${baseTransform}%)`;
+};
   return (
     <div className="min-h-screen bg-neutral-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
@@ -117,7 +133,9 @@ function App(data) {
               {extendedInvites.map((invite, index) => (
                 <div 
                   key={`${invite.id}-${index}`}
-                  className="w-1/3 flex-shrink-0 px-4"
+                  // className="w-1/3 flex-shrink-0 px-4"
+                  className="w-full md:w-1/3 flex-shrink-0 px-4"
+
                 >
                   <div className="bg-neutral-100 rounded-lg p-4 shadow-lg">
                     <div className="relative aspect-square overflow-hidden rounded-lg shadow-md">
